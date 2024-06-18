@@ -15,14 +15,21 @@
 from dataclasses import dataclass, field
 from typing import Optional
 from transformers import TrainingArguments
+from transformers.integrations import WandbCallback  # Added import
 from trl import SFTTrainer
-from . import is_bfloat16_supported
+import wandb  # Added import
+#from . import is_bfloat16_supported
 
 __all__ = [
     "UnslothTrainingArguments",
     "UnslothTrainer",
 ]
 
+# Log in to wandb
+wandb.login()  # Added login
+
+# Initialize wandb
+wandb.init(project="unsloth")  # Added initialization
 
 @dataclass
 class UnslothTrainingArguments(TrainingArguments):
@@ -31,7 +38,6 @@ class UnslothTrainingArguments(TrainingArguments):
         metadata = {"help" : "Different learning rates for embeddings and lm_head."}
     )
 pass
-
 
 def _create_unsloth_optimizer(
     model,
@@ -76,7 +82,6 @@ def _create_unsloth_optimizer(
     return optimizer
 pass
 
-
 class UnslothTrainer(SFTTrainer):
     def create_optimizer(self):
         embedding_learning_rate = getattr(self.args, "embedding_learning_rate", None)
@@ -94,3 +99,13 @@ class UnslothTrainer(SFTTrainer):
         return self.optimizer
     pass
 pass
+
+# Add WandbCallback to Trainer's callbacks
+training_args = UnslothTrainingArguments(
+    # other arguments here
+    output_dir="output",
+    evaluation_strategy="steps",
+    logging_dir="./logs",
+    logging_steps=10,
+    report_to="wandb"  # Enable wandb reporting
+)
