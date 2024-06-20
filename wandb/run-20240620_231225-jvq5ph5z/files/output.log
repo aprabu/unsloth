@@ -1,0 +1,32 @@
+config.json: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1.20k/1.20k [00:00<00:00, 209kB/s]
+`low_cpu_mem_usage` was None, now set to True since model is quantized.
+
+
+
+
+
+
+
+
+
+
+
+model.safetensors: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 5.70G/5.70G [00:23<00:00, 244MB/s]
+Some weights of LlamaForSequenceClassification were not initialized from the model checkpoint at unsloth/llama-3-8b-bnb-4bit and are newly initialized: ['score.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+tokenizer_config.json: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 50.6k/50.6k [00:00<00:00, 9.87MB/s]
+tokenizer.json: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 9.09M/9.09M [00:00<00:00, 45.0MB/s]
+special_tokens_map.json: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 464/464 [00:00<00:00, 481kB/s]
+Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+Traceback (most recent call last):
+  File "/home/paperspace/miniconda3/envs/env/lib/python3.9/runpy.py", line 188, in _run_module_as_main
+    mod_name, mod_spec, code = _get_module_details(mod_name, _Error)
+  File "/home/paperspace/miniconda3/envs/env/lib/python3.9/runpy.py", line 111, in _get_module_details
+    __import__(pkg_name)
+  File "/home/paperspace/unsloth/unsloth/unsloth/__init__.py", line 146, in <module>
+    from .trainer import *
+  File "/home/paperspace/unsloth/unsloth/unsloth/trainer.py", line 67, in <module>
+    fp16=not is_bfloat16_supported(),
+  File "/home/paperspace/unsloth/unsloth/unsloth/is_bfloat16_supported.py", line 6, in is_bfloat16_supported
+    return torch.cuda.is_bfloat16_supported()
+AttributeError: module 'torch.cuda' has no attribute 'is_bfloat16_supported'

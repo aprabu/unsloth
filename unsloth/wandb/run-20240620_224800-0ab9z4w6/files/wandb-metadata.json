@@ -1,0 +1,107 @@
+{
+    "os": "Linux-6.2.0-37-generic-x86_64-with-glibc2.17",
+    "python": "3.8.19",
+    "heartbeatAt": "2024-06-20T22:48:00.612889",
+    "startedAt": "2024-06-20T22:48:00.160699",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "<python with no main file>",
+    "codePathLocal": null,
+    "git": {
+        "remote": "https://github.com/aprabu/unsloth.git",
+        "commit": "c36764aaca001579dde0d26cb9f44e4e4dcfc33d"
+    },
+    "email": "aadhav.prabu@gmail.com",
+    "root": "/home/paperspace/unsloth/unsloth",
+    "host": "psoh3revuodj",
+    "username": "paperspace",
+    "executable": "/home/paperspace/miniconda3/envs/cudaenv/bin/python",
+    "cpu_count": 12,
+    "cpu_count_logical": 12,
+    "cpu_freq": {
+        "current": 2800.164,
+        "min": 0.0,
+        "max": 0.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2800.164,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2800.164,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2800.164,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2800.164,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2800.164,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2800.164,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2800.164,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2800.164,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2800.164,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2800.164,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2800.164,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2800.164,
+            "min": 0.0,
+            "max": 0.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 982.4505729675293,
+            "used": 46.99662780761719
+        }
+    },
+    "gpu": "NVIDIA A100-SXM4-80GB",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA A100-SXM4-80GB",
+            "memory_total": 85899345920
+        }
+    ],
+    "memory": {
+        "total": 88.37420654296875
+    }
+}

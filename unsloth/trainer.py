@@ -1,111 +1,88 @@
-# Copyright 2023-present Daniel Han-Chen & the Unsloth team. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# trainer.py
 
-from dataclasses import dataclass, field
-from typing import Optional
-from transformers import TrainingArguments
-from transformers.integrations import WandbCallback  # Added import
+# Import necessary libraries and modules
+from unsloth.FastLanguageModel import FastLanguageModel
+from unsloth.is_bfloat16_supported import is_bfloat16_supported
+import torch
 from trl import SFTTrainer
-import wandb  # Added import
-#from . import is_bfloat16_supported
-
-__all__ = [
-    "UnslothTrainingArguments",
-    "UnslothTrainer",
-]
-
-# Log in to wandb
-wandb.login()  # Added login
+from transformers import TrainingArguments
+from transformers.integrations import WandbCallback  # Correct import statement
+from datasets import load_dataset
+import wandb
 
 # Initialize wandb
-wandb.init(project="unsloth")  # Added initialization
+wandb.login()
+wandb.init(project="unsloth")
 
-@dataclass
-class UnslothTrainingArguments(TrainingArguments):
-    embedding_learning_rate : Optional[float] = field(
-        default = None,
-        metadata = {"help" : "Different learning rates for embeddings and lm_head."}
-    )
-pass
+# Configuration
+max_seq_length = 2048  # Supports RoPE Scaling internally, so choose any!
 
-def _create_unsloth_optimizer(
+# Load Alpaca-cleaned dataset
+dataset = load_dataset("yahma/alpaca-cleaned")
+
+# 4bit pre-quantized models we support for 4x faster downloading + no OOMs.
+fourbit_models = [
+    "unsloth/mistral-7b-v0.3-bnb-4bit",
+    "unsloth/mistral-7b-instruct-v0.3-bnb-4bit",
+    "unsloth/llama-3-8b-bnb-4bit",
+    "unsloth/llama-3-8b-Instruct-bnb-4bit",
+    "unsloth/llama-3-70b-bnb-4bit",
+    "unsloth/Phi-3-mini-4k-instruct",
+    "unsloth/Phi-3-medium-4k-instruct",
+    "unsloth/mistral-7b-bnb-4bit",
+    "unsloth/gemma-7b-bnb-4bit",
+]  # More models at https://huggingface.co/unsloth
+
+# Load model and tokenizer
+model, tokenizer = FastLanguageModel.from_pretrained(
+    model_name="unsloth/llama-3-8b",
+    max_seq_length=max_seq_length,
+    dtype=None,
+    load_in_4bit=False,
+)
+
+# Model patching and add fast LoRA weights
+model = FastLanguageModel.get_peft_model(
     model,
-    optimizer_cls,
-    optimizer_kwargs,
-    embedding_lr = 5e-5,
-):
-    lr = optimizer_kwargs["lr"]
-    weight_decay = optimizer_kwargs.get("weight_decay", 0.0)
+    r=16,
+    target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
+                    "gate_proj", "up_proj", "down_proj"],
+    lora_alpha=16,
+    lora_dropout=0,  # Supports any, but = 0 is optimized
+    bias="none",  # Supports any, but = "none" is optimized
+    # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
+    use_gradient_checkpointing="unsloth",  # True or "unsloth" for very long context
+    random_state=3407,
+    max_seq_length=max_seq_length,
+    use_rslora=False,  # We support rank stabilized LoRA
+    loftq_config=None,  # And LoftQ
+)
 
-    param_groups = \
-    {
-        "non_embeddings" : {},
-        "embeddings"     : {},
-    }
-
-    for name, param in model.named_parameters():
-        if not param.requires_grad: continue
-        if name.endswith("modules_to_save.default.weight"):
-            partial_name = name[:-len(".modules_to_save.default.weight")]
-            partial_name = partial_name[partial_name.rfind(".")+1:]
-            print(f"Unsloth: Setting lr = {embedding_lr:.2e} instead of {lr:.2e} for {partial_name}.")
-            param_groups["embeddings"]    [name] = param
-        else:
-            param_groups["non_embeddings"][name] = param
-        pass
-    pass
-
-    optimizer_grouped_parameters = [
-        {
-            "params"       : list(param_groups["non_embeddings"].values()),
-            "weight_decay" : weight_decay,
-            "lr"           : lr,
-        },
-        {
-            "params"       : list(param_groups["embeddings"].values()),
-            "weight_decay" : weight_decay,
-            "lr"           : embedding_lr,
-        },
-    ]
-    optimizer = optimizer_cls(optimizer_grouped_parameters, **optimizer_kwargs)
-    return optimizer
-pass
-
-class UnslothTrainer(SFTTrainer):
-    def create_optimizer(self):
-        embedding_learning_rate = getattr(self.args, "embedding_learning_rate", None)
-        if embedding_learning_rate is None: return super().create_optimizer()
-
-        if self.optimizer is None:
-            optimizer_cls, optimizer_kwargs = SFTTrainer.get_optimizer_cls_and_kwargs(self.args)
-            self.optimizer = _create_unsloth_optimizer(
-                self.model,
-                optimizer_cls,
-                optimizer_kwargs,
-                embedding_learning_rate,
-            )
-        pass
-        return self.optimizer
-    pass
-pass
-
-# Add WandbCallback to Trainer's callbacks
-training_args = UnslothTrainingArguments(
-    # other arguments here
-    output_dir="output",
-    evaluation_strategy="steps",
-    logging_dir="./logs",
-    logging_steps=10,
+# Define training arguments with wandb logging enabled
+training_args = TrainingArguments(
+    per_device_train_batch_size=2,
+    gradient_accumulation_steps=4,
+    warmup_steps=10,
+    max_steps=60,
+    fp16=False,
+    bf16=True,
+    logging_steps=1,
+    output_dir="outputs",
+    optim="adamw_8bit",
+    seed=3407,
     report_to="wandb"  # Enable wandb reporting
 )
+
+# Initialize trainer with WandbCallback
+trainer = SFTTrainer(
+    model=model,
+    train_dataset=dataset["train"],
+    dataset_text_field="instruction",  # Adjust based on actual dataset fields
+    max_seq_length=max_seq_length,
+    tokenizer=tokenizer,
+    args=training_args,
+    callbacks=[WandbCallback()]  # Add WandbCallback to the trainer
+)
+
+# Start training
+trainer.train()

@@ -1,0 +1,11 @@
+Downloading readme: 100%|█████████████████████████████████| 11.6k/11.6k [00:00<00:00, 32.4MB/s]
+Downloading data: 100%|████████████████████████████████████| 44.3M/44.3M [00:00<00:00, 191MB/s]
+Generating train split: 100%|█████████████████| 51760/51760 [00:00<00:00, 113512.37 examples/s]
+Traceback (most recent call last):
+  File "/home/paperspace/miniconda3/envs/cudaenv/lib/python3.8/runpy.py", line 185, in _run_module_as_main
+    mod_name, mod_spec, code = _get_module_details(mod_name, _Error)
+  File "/home/paperspace/miniconda3/envs/cudaenv/lib/python3.8/runpy.py", line 111, in _get_module_details
+    __import__(pkg_name)
+  File "/home/paperspace/unsloth/unsloth/unsloth/trainer.py", line 34, in <module>
+    model, tokenizer = FastLanguageModel.from_pretrained(
+AttributeError: module 'FastLanguageModel' has no attribute 'from_pretrained'

@@ -1,0 +1,6 @@
+/home/paperspace/miniconda3/envs/cudaenv/lib/python3.8/site-packages/transformers/training_args.py:1474: FutureWarning: `evaluation_strategy` is deprecated and will be removed in version 4.46 of 🤗 Transformers. Use `eval_strategy` instead
+  warnings.warn(
+Traceback (most recent call last):
+  File "/home/paperspace/unsloth/unsloth/unsloth/trainer.py", line 114, in <module>
+    model=model,
+NameError: name 'model' is not defined

@@ -1,0 +1,23 @@
+
+
+Loading checkpoint shards: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:05<00:00,  1.37s/it]
+Some weights of LlamaForSequenceClassification were not initialized from the model checkpoint at unsloth/llama-3-8b and are newly initialized: ['score.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+/home/paperspace/miniconda3/envs/env/lib/python3.9/site-packages/trl/trainer/sft_trainer.py:318: UserWarning: You passed a tokenizer with `padding_side` not equal to `right` to the SFTTrainer. This might lead to some unexpected behaviour due to overflow issues when training a model in half-precision. You might consider adding `tokenizer.padding_side = 'right'` to your code.
+  warnings.warn(
+You are adding a <class 'transformers.integrations.integration_utils.WandbCallback'> to the callbacks of this Trainer, but there is already one. The currentlist of callbacks is
+:DefaultFlowCallback
+WandbCallback
+max_steps is given, it will override any value given in num_train_epochs
+Traceback (most recent call last):
+  File "/home/paperspace/miniconda3/envs/env/lib/python3.9/runpy.py", line 188, in _run_module_as_main
+    mod_name, mod_spec, code = _get_module_details(mod_name, _Error)
+  File "/home/paperspace/miniconda3/envs/env/lib/python3.9/runpy.py", line 111, in _get_module_details
+    __import__(pkg_name)
+  File "/home/paperspace/unsloth/unsloth/unsloth/__init__.py", line 146, in <module>
+    from .trainer import *
+  File "/home/paperspace/unsloth/unsloth/unsloth/trainer.py", line 88, in <module>
+    trainer.train()
+  File "<string>", line 26, in train
+RuntimeError: Do not edit specific areas of the Unsloth codebase or you will get CUDA segfaults.

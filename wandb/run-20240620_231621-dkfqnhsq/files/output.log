@@ -1,0 +1,22 @@
+
+`low_cpu_mem_usage` was None, now set to True since model is quantized.
+Some weights of LlamaForSequenceClassification were not initialized from the model checkpoint at unsloth/llama-3-8b-bnb-4bit and are newly initialized: ['score.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+Map: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 51760/51760 [00:00<00:00, 77167.25 examples/s]
+/home/paperspace/miniconda3/envs/env/lib/python3.9/site-packages/trl/trainer/sft_trainer.py:318: UserWarning: You passed a tokenizer with `padding_side` not equal to `right` to the SFTTrainer. This might lead to some unexpected behaviour due to overflow issues when training a model in half-precision. You might consider adding `tokenizer.padding_side = 'right'` to your code.
+  warnings.warn(
+Traceback (most recent call last):
+  File "/home/paperspace/miniconda3/envs/env/lib/python3.9/runpy.py", line 188, in _run_module_as_main
+    mod_name, mod_spec, code = _get_module_details(mod_name, _Error)
+  File "/home/paperspace/miniconda3/envs/env/lib/python3.9/runpy.py", line 111, in _get_module_details
+    __import__(pkg_name)
+  File "/home/paperspace/unsloth/unsloth/unsloth/__init__.py", line 146, in <module>
+    from .trainer import *
+  File "/home/paperspace/unsloth/unsloth/unsloth/trainer.py", line 77, in <module>
+    trainer = SFTTrainer(
+  File "/home/paperspace/miniconda3/envs/env/lib/python3.9/site-packages/trl/trainer/sft_trainer.py", line 323, in __init__
+    super().__init__(
+  File "/home/paperspace/miniconda3/envs/env/lib/python3.9/site-packages/transformers/trainer.py", line 475, in __init__
+    raise ValueError(
+ValueError: You cannot perform fine-tuning on purely quantized models. Please attach trainable adapters on top of the quantized model to correctly perform fine-tuning. Please see: https://huggingface.co/docs/transformers/peft for more details
