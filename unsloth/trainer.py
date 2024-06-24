@@ -1,8 +1,7 @@
 # trainer.py
 
 # Import necessary libraries and modules
-from unsloth.FastLanguageModel import FastLanguageModel
-from unsloth.is_bfloat16_supported import is_bfloat16_supported
+from unsloth import FastLanguageModel
 import torch
 from trl import SFTTrainer
 from transformers import TrainingArguments
@@ -63,7 +62,7 @@ training_args = TrainingArguments(
     per_device_train_batch_size=2,
     gradient_accumulation_steps=4,
     warmup_steps=10,
-    max_steps=60,
+    max_steps=10000,
     fp16=False,
     bf16=True,
     logging_steps=1,
